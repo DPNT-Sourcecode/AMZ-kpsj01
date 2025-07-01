@@ -32,7 +32,7 @@ namespace BeFaster.App.Solutions.AMZ
             process.WaitForExit();
             return output;
         }
-    }
-            
+    }           
     
 }
+
