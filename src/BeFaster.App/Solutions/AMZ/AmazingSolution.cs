@@ -8,59 +8,31 @@ namespace BeFaster.App.Solutions.AMZ
     {
         public string AmazingMaze(int rows, int columns, Dictionary<string, string> mazeGenerationOptions)
         {
-            // Define the path to the legacy executable/script
-            string legacyExecutablePath = "amazing.exe"; // Adjust the filename if it's different (e.g., amazing.py, amazing.sh)
-
-            // Set up the process start info
-            var startInfo = new ProcessStartInfo
+            var process = new Process
             {
-                FileName = legacyExecutablePath,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "Legacy.exe", // Or python, amazing.sh, etc.
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
             };
 
-            try
+            process.Start();
+
+            using (StreamWriter writer = process.StandardInput)
             {
-                using (var process = new Process { StartInfo = startInfo })
-                {
-                    var outputBuilder = new StringBuilder();
-
-                    process.Start();
-
-                    // Write input: columns first (width), then rows (length)
-                    using (StreamWriter writer = process.StandardInput)
-                    {
-                        if (writer.BaseStream.CanWrite)
-                        {
-                            writer.WriteLine($"{columns} {rows}");
-                        }
-                    }
-
-                    // Read and filter output
-                    using (StreamReader reader = process.StandardOutput)
-                    {
-                        string? line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            // Filter out any prompt like "WHAT ARE YOUR WIDTH AND LENGTH?"
-                            if (!line.Trim().ToUpper().Contains("WHAT ARE YOUR WIDTH AND LENGTH"))
-                            {
-                                outputBuilder.AppendLine(line);
-                            }
-                        }
-                    }
-
-                    process.WaitForExit();
-
-                    return outputBuilder.ToString().TrimEnd(); // remove trailing newline
-                }
+                writer.WriteLine(columns); // Width
+                writer.WriteLine(rows);    // Length
             }
-            catch (Exception ex)
-            {
-                return $"Error running maze generator: {ex.Message}";
-            }
+
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+            return output;
         }
     }
+            
+    
 }
