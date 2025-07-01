@@ -12,7 +12,7 @@ namespace Legacy
 
         public static void Main(string[] args)
         {
-            Run();
+            Run(args[0], args[1]);
         }
 
         static int currentLineCharCount = 0;
@@ -71,9 +71,9 @@ namespace Legacy
             return (float)text.Length;
         }
 
-        public static void Run()
+        public static void Run(string width, string length)
         {
-            int label = 10;
+            int label = 100;
 
             float scalarC = 0;
             float scalarH = 0;
@@ -100,7 +100,7 @@ namespace Legacy
                 if (iterations > 99999)
                 {
                     Print("INFINITE LOOP DETECTED. STOPPING EXECUTION.");
-                    Println();
+                    //Println();
                     return;
                 }
 
@@ -132,10 +132,12 @@ namespace Legacy
                     //100INPUT"WHATAREYOURWIDTHANDLENGTH";H,V
                     case 100:
                         label = 102;
-                        Print("WHAT ARE YOUR WIDTH AND LENGTH");
-                        Println();
-                        scalarH = float.Parse(Console.ReadLine());
-                        scalarV = float.Parse(Console.ReadLine());
+                        //Print("WHAT ARE YOUR WIDTH AND LENGTH");
+                        //Println();
+                        //scalarH = float.Parse(Console.ReadLine());
+                        //scalarV = float.Parse(Console.ReadLine());
+                        scalarH = float.Parse(width);
+                        scalarV = float.Parse(length);
                         break;
                     //102IFH<>1ANDV<>1THEN110
                     case 102:

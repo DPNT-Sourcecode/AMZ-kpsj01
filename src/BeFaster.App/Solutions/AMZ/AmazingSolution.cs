@@ -13,7 +13,8 @@ namespace BeFaster.App.Solutions.AMZ
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "Legacy.exe", // Or python, amazing.sh, etc.
-                    RedirectStandardInput = true,
+                    Arguments = columns.ToString()+","+ rows.ToString(),
+                    RedirectStandardInput = false,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
@@ -22,11 +23,11 @@ namespace BeFaster.App.Solutions.AMZ
 
             process.Start();
 
-            using (StreamWriter writer = process.StandardInput)
-            {
-                writer.WriteLine(columns); // Width
-                writer.WriteLine(rows);    // Length
-            }
+            //using (StreamWriter writer = process.StandardInput)
+            //{
+            //    writer.WriteLine(columns); // Width
+            //    writer.WriteLine(rows);    // Length
+            //}
 
             string output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
@@ -35,4 +36,3 @@ namespace BeFaster.App.Solutions.AMZ
     }           
     
 }
-
