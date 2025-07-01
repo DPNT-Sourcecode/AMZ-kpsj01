@@ -13,7 +13,7 @@ namespace BeFaster.App.Solutions.AMZ
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "Legacy.exe", // Or python, amazing.sh, etc.
-                    Arguments = columns.ToString()+","+ rows.ToString(),
+                    Arguments = columns.ToString()+" "+ rows.ToString(),
                     RedirectStandardInput = false,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -29,7 +29,7 @@ namespace BeFaster.App.Solutions.AMZ
             //    writer.WriteLine(rows);    // Length
             //}
 
-            string output = process.StandardOutput.ReadToEnd();
+            string output = process.StandardOutput.ReadToEnd().Trim();
             process.WaitForExit();
             return output;
         }
