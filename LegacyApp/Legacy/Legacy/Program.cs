@@ -13,7 +13,8 @@ namespace Legacy
         public static void Main(string[] args)
         {
             string option1 = "";
-            if(args!=null && args[2]!=null)
+
+            if(args!=null && args.Count()==3 && args[2]!=null)
                 option1=args[2];
             string[] option1KV = option1.Split('=');
             Dictionary<string, string> dict = null;
