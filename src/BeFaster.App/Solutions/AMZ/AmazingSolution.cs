@@ -9,9 +9,13 @@ namespace BeFaster.App.Solutions.AMZ
         public string AmazingMaze(int rows, int columns, Dictionary<string, string> mazeGenerationOptions)
         {
             string passArg = columns.ToString() + " " + rows.ToString();
-            if (mazeGenerationOptions != null && mazeGenerationOptions.Count==1 && mazeGenerationOptions["ENTRY_COLUMN"]!=null)
+
+            if (mazeGenerationOptions != null && mazeGenerationOptions.Count > 0)
             {
-                passArg = columns.ToString() + " " + rows.ToString() + " ENTRY_COLUMN=" + mazeGenerationOptions["ENTRY_COLUMN"].ToString();
+                foreach (var kvp in mazeGenerationOptions)
+                {
+                    passArg += $" {kvp.Key}={kvp.Value}";
+                }
             }
             var process = new Process
             {
@@ -41,3 +45,4 @@ namespace BeFaster.App.Solutions.AMZ
     }           
     
 }
+
