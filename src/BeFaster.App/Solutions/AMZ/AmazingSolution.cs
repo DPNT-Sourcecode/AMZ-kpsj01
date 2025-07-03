@@ -13,7 +13,7 @@ namespace BeFaster.App.Solutions.AMZ
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "Legacy.exe", // Or python, amazing.sh, etc.
-                    Arguments = columns.ToString()+" "+ rows.ToString(),
+                    Arguments = columns.ToString()+" "+ rows.ToString() + " ENTRY_COLUMN=" + mazeGenerationOptions["ENTRY_COLUMN"].ToString(),
                     RedirectStandardInput = false,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -36,3 +36,4 @@ namespace BeFaster.App.Solutions.AMZ
     }           
     
 }
+
