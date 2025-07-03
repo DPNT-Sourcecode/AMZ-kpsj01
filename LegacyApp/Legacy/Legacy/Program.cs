@@ -86,13 +86,10 @@ namespace Legacy
 
         public static void Run(string width, string length, Dictionary<string, string> mazeGenerationOptions)
         {
-            int entryPosition = 0;
-            if (mazeGenerationOptions != null)
+            int? entryPosition = null;
+            if (mazeGenerationOptions != null && mazeGenerationOptions.ContainsKey("ENTRY_COLUMN"))
             {
-                string entryColumn = mazeGenerationOptions["ENTRY_COLUMN"].ToString();
-                entryPosition=int.Parse(entryColumn);
-                if (entryPosition != 0)
-                    entryPosition = entryPosition - 1;
+                entryPosition = int.Parse(mazeGenerationOptions["ENTRY_COLUMN"]) - 1;
             }
 
             int label = 100;
@@ -208,12 +205,13 @@ namespace Legacy
                         label = 165;
                         scalarQ = 0;
                         scalarZ = 0;
-                        //scalarX = RoundDownToInt(Random(1) * scalarH + 1);
-                        if (entryPosition >= 0 && entryPosition < scalarH)
-                            scalarX = entryPosition + 1; // 1-indexed start column
+                        //scalarX = RoundDownToInt(Random(1) * scalarH + 1);                        
+
+                        if (entryPosition.HasValue)
+                            scalarX = entryPosition.Value + 1; // BASIC-style 1-indexed
                         else
-                            scalarX = RoundDownToInt(Random(1) * scalarH + 1);
-                        
+                            scalarX = RoundDownToInt(Random(1) * scalarH + 1); // Original behavior
+
                         break;
                     //165FORI=1TOH
                     case 165:
