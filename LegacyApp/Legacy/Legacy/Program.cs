@@ -12,19 +12,21 @@ namespace Legacy
 
         public static void Main(string[] args)
         {
-            string option1 = "";
+            //string option1 = "";
 
-            if (args != null && args.Count() == 3 && args[2] != null)
-                option1 = args[2];
-            string[] option1KV = option1.Split('=');
-            Dictionary<string, string> dict = null;
-            if (option1KV.Length == 2)
-            {
-                dict = new Dictionary<string, string>
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            if (args != null && args.Length >= 3 && !string.IsNullOrWhiteSpace(args[2]))
+            {               
+                foreach (var option in args)
                 {
-                    { option1KV[0], option1KV[1] }
-                };
+                    var keyValue = option.Split('=');
+                    if (keyValue.Length == 2)
+                    {
+                        dict[keyValue[0].Trim()] = keyValue[1].Trim();
+                    }
+                }
             }
+
             Run(args[0], args[1], dict);
         }
 
@@ -90,6 +92,14 @@ namespace Legacy
         public static void Run(string width, string length, Dictionary<string, string> mazeGenerationOptions)
         {
             int? entryPosition = null;
+            string deadEndBehaviour = "CREATE_EXIT";
+            if (mazeGenerationOptions != null && mazeGenerationOptions.ContainsKey("DEAD_END_ON_LAST_ROW_BEHAVIOUR"))
+            {
+                deadEndBehaviour = mazeGenerationOptions["DEAD_END_ON_LAST_ROW_BEHAVIOUR"];
+            }
+
+            int? treasureCol = null;
+
             if (mazeGenerationOptions != null && mazeGenerationOptions.ContainsKey("ENTRY_COLUMN"))
             {
                 entryPosition = int.Parse(mazeGenerationOptions["ENTRY_COLUMN"]) - 1;
@@ -1029,10 +1039,20 @@ namespace Legacy
                     //1010IFZ=1THEN1015
                     case 1010:
                         label = 1011;
-                        if ((scalarZ == 1))
+                        if (scalarZ == 1 && deadEndBehaviour == "CREATE_TREASURE")
                         {
-                            label = 1015;
+                            for (int col = 1; col <= AsInt(scalarH); col++)
+                            {
+                                if (matrixV[col, AsInt(scalarV)] == 0)
+                                {
+                                    treasureCol = col;
+                                    break;
+                                }
+                            }
                         }
+
+                        label = 1015;
+                        
                         break;
                     //1011X=INT(RND(1)*H+1)
                     case 1011:
@@ -1051,10 +1071,52 @@ namespace Legacy
                     case 1013:
                         label = 1014;
                         matrixV[AsInt(scalarX), AsInt(scalarV)] = 3;
+
+                        // Inject treasure logic if dead end detected
+                        if (deadEndBehaviour == "CREATE_TREASURE")
+                        {
+                            for (int col = 1; col <= AsInt(scalarH); col++)
+                            {
+                                if (matrixV[col, AsInt(scalarV)] == 0)
+                                {
+                                    treasureCol = col;
+                                    break;
+                                }
+                            }
+                        }
+
+
+                        // If a treasure was placed in this column, remove it
+                        if (treasureCol.HasValue && treasureCol.Value == AsInt(scalarX))
+                        {
+                            treasureCol = null;
+                        }
+
                         label = 1015;
                         break;
                     //1014V(X,V)=1
                     case 1014:
+
+                        // Inject treasure logic if dead end detected
+                        if (deadEndBehaviour == "CREATE_TREASURE")
+                        {
+                            for (int col = 1; col <= AsInt(scalarH); col++)
+                            {
+                                if (matrixV[col, AsInt(scalarV)] == 0)
+                                {
+                                    treasureCol = col;
+                                    break;
+                                }
+                            }
+                        }
+
+
+                        // If a treasure was placed in this column, remove it
+                        if (treasureCol.HasValue && treasureCol.Value == AsInt(scalarX))
+                        {
+                            treasureCol = null;
+                        }
+
                         label = 1015;
                         matrixV[AsInt(scalarX), AsInt(scalarV)] = 1;
                         break;
@@ -1092,7 +1154,13 @@ namespace Legacy
                     //1018IFV(I,J)<2THEN1030
                     case 1018:
                         label = 1020;
-                        if ((matrixV[AsInt(scalarI), AsInt(scalarJ)] < 2))
+
+                        //if (treasureCol.HasValue && treasureCol.Value == AsInt(scalarI) && AsInt(scalarJ) == AsInt(scalarV))
+                        //{
+                        //    Print("<>");
+                        //}
+                        //else
+if ((matrixV[AsInt(scalarI), AsInt(scalarJ)] < 2))
                         {
                             label = 1030;
                         }
@@ -1110,7 +1178,17 @@ namespace Legacy
                     //1030PRINT"I";
                     case 1030:
                         label = 1040;
-                        Print("  I");
+                        if (treasureCol.HasValue &&
+    treasureCol.Value == AsInt(scalarI) &&
+    AsInt(scalarJ) == AsInt(scalarV))
+                        {
+                            Print("<>");
+                        }
+                        else
+                        {
+                            Print("  I");
+                        }
+
                         break;
                     //1040NEXTI
                     case 1040:
@@ -1182,6 +1260,27 @@ namespace Legacy
                     case 1072:
                         label = 1073;
                         scalarJ = scalarJ + 1;
+
+                        // Inject treasure logic if dead end detected
+                        if (deadEndBehaviour == "CREATE_TREASURE")
+                        {
+                            for (int col = 1; col <= AsInt(scalarH); col++)
+                            {
+                                if (matrixV[col, AsInt(scalarV)] == 0)
+                                {
+                                    treasureCol = col;
+                                    break;
+                                }
+                            }
+                        }
+
+
+                        // If a treasure was placed in this column, remove it
+                        if (treasureCol.HasValue && treasureCol.Value == AsInt(scalarX))
+                        {
+                            treasureCol = null;
+                        }
+
                         label = 1015;
                         break;
                     //1073END
