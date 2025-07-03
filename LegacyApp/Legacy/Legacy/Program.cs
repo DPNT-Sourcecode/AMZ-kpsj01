@@ -12,7 +12,19 @@ namespace Legacy
 
         public static void Main(string[] args)
         {
-            Run(args[0], args[1]);
+            string option1 = "";
+            if(args!=null && args[2]!=null)
+                option1=args[2];
+            string[] option1KV = option1.Split('=');
+            Dictionary<string, string> dict = null;
+            if (option1KV.Length == 2)
+            {
+                dict = new Dictionary<string, string>
+                {
+                    { option1KV[0], option1KV[1] }
+                };
+            }
+            Run(args[0], args[1],dict);
         }
 
         static int currentLineCharCount = 0;
@@ -71,8 +83,17 @@ namespace Legacy
             return (float)text.Length;
         }
 
-        public static void Run(string width, string length)
+        public static void Run(string width, string length, Dictionary<string, string> mazeGenerationOptions)
         {
+            int entryPosition = 0;
+            if (mazeGenerationOptions != null)
+            {
+                string entryColumn = mazeGenerationOptions["ENTRY_COLUMN"].ToString();
+                entryPosition=int.Parse(entryColumn);
+                if (entryPosition != 0)
+                    entryPosition = entryPosition - 1;
+            }
+
             int label = 100;
 
             float scalarC = 0;
@@ -136,8 +157,10 @@ namespace Legacy
                         //Println();
                         //scalarH = float.Parse(Console.ReadLine());
                         //scalarV = float.Parse(Console.ReadLine());
-                        scalarH = float.Parse(width);
-                        scalarV = float.Parse(length);
+                        scalarH = float.Parse(width); //column
+                        scalarV = float.Parse(length); //row
+                        if(entryPosition>0 && entryPosition < scalarH)
+                            scalarH = scalarH - entryPosition;
                         break;
                     //102IFH<>1ANDV<>1THEN110
                     case 102:
