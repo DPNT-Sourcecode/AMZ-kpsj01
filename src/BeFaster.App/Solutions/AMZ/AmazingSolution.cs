@@ -8,12 +8,17 @@ namespace BeFaster.App.Solutions.AMZ
     {
         public string AmazingMaze(int rows, int columns, Dictionary<string, string> mazeGenerationOptions)
         {
+            string passArg = columns.ToString() + " " + rows.ToString();
+            if (mazeGenerationOptions != null && mazeGenerationOptions.Count==1 && mazeGenerationOptions["ENTRY_COLUMN"]!=null)
+            {
+                passArg = columns.ToString() + " " + rows.ToString() + " ENTRY_COLUMN=" + mazeGenerationOptions["ENTRY_COLUMN"].ToString();
+            }
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "Legacy.exe", // Or python, amazing.sh, etc.
-                    Arguments = columns.ToString()+" "+ rows.ToString() + " ENTRY_COLUMN=" + mazeGenerationOptions["ENTRY_COLUMN"].ToString(),
+                    Arguments = passArg,
                     RedirectStandardInput = false,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -36,4 +41,5 @@ namespace BeFaster.App.Solutions.AMZ
     }           
     
 }
+
 
