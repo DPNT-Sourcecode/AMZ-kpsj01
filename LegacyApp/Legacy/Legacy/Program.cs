@@ -66,9 +66,12 @@ namespace Legacy
             return (float)Math.Floor(variable);
         }
 
-        static float Random(int positiveInt)
+        static float? magicRandomValue = null;
+        public static float Random(int dummy)
         {
-            return (float)0.5;
+            if (magicRandomValue.HasValue)
+                return magicRandomValue.Value;
+            return 0.5f; // fallback default
         }
 
         static string Mid(string text, float startingIndex, float numChars)
@@ -90,6 +93,11 @@ namespace Legacy
             if (mazeGenerationOptions != null && mazeGenerationOptions.ContainsKey("ENTRY_COLUMN"))
             {
                 entryPosition = int.Parse(mazeGenerationOptions["ENTRY_COLUMN"]) - 1;
+            }
+
+            if (mazeGenerationOptions != null && mazeGenerationOptions.ContainsKey("LEGACY_RANDOM_MAGIC_NUMBER"))
+            {
+                magicRandomValue = float.Parse(mazeGenerationOptions["LEGACY_RANDOM_MAGIC_NUMBER"]);
             }
 
             int label = 100;
