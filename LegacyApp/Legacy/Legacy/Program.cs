@@ -160,8 +160,8 @@ namespace Legacy
                         //scalarV = float.Parse(Console.ReadLine());
                         scalarH = float.Parse(width); //column
                         scalarV = float.Parse(length); //row
-                        if(entryPosition>0 && entryPosition < scalarH)
-                            scalarH = scalarH - entryPosition;
+                        //if(entryPosition>0 && entryPosition < scalarH)
+                        //    scalarH = scalarH - entryPosition;
                         break;
                     //102IFH<>1ANDV<>1THEN110
                     case 102:
@@ -208,7 +208,12 @@ namespace Legacy
                         label = 165;
                         scalarQ = 0;
                         scalarZ = 0;
-                        scalarX = RoundDownToInt(Random(1) * scalarH + 1);
+                        //scalarX = RoundDownToInt(Random(1) * scalarH + 1);
+                        if (entryPosition >= 0 && entryPosition < scalarH)
+                            scalarX = entryPosition + 1; // 1-indexed start column
+                        else
+                            scalarX = RoundDownToInt(Random(1) * scalarH + 1);
+                        
                         break;
                     //165FORI=1TOH
                     case 165:
