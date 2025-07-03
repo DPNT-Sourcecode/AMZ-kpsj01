@@ -35,4 +35,3 @@ namespace BeFaster.App.Solutions.ULT
         }
     }
 }
-
