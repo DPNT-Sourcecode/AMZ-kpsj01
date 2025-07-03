@@ -105,7 +105,8 @@ namespace Legacy
             void Carve(int x, int y)
             {
                 visited[x, y] = true;
-                var dirs = Enumerable.Range(0, 4).OrderBy(_ => Random(1)).ToArray();
+                var dirs = new List<int> { 0, 1, 2, 3 };
+                Shuffle(dirs);
                 foreach (int dir in dirs)
                 {
                     int nx = x + dx[dir];
@@ -136,10 +137,23 @@ namespace Legacy
                 }
             }
 
-            Carve(entryCol, 0);
+            void Shuffle(List<int> list)
+            {
+                Random rnd = new Random();
+                for (int i = list.Count - 1; i > 0; i--)
+                {
+                    int j = rnd.Next(i + 1);
+                    int temp = list[i];
+                    list[i] = list[j];
+                    list[j] = temp;
+                }
+            }
 
-            // Optional exit at bottom-right for legacy compatibility
-            maze.Cells[columns - 1, rows - 1].Bottom = false;
+            for (int y = 0; y < rows; y++)
+                for (int x = 0; x < columns; x++)
+                    visited[x, y] = false;
+
+            Carve(entryCol, 0);
 
             return maze;
         }
@@ -170,3 +184,4 @@ namespace Legacy
         }
     }
 }
+
